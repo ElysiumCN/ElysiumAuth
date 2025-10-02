@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.freefair.lombok' version '8.4'
 }
 
 group = 'com.skilfully.elysium'
@@ -19,6 +20,22 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
+
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    // JDBI SQL工具库
+    implementation 'org.jdbi:jdbi3-core:3.37.1'
+    implementation("org.jdbi:jdbi3-sqlobject:3.45.0")
+    // 数据库驱动
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
+    implementation 'org.postgresql:postgresql:42.7.7'
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    // valid
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    implementation 'org.glassfish:jakarta.el:4.0.2'
 }
 
 def targetJavaVersion = 16

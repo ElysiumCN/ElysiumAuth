@@ -1,5 +1,5 @@
-name: Elysium Auth Paper
-version: '${version}'
+name: ElysiumAuthPaper
+version: 0.1
 main: com.skilfully.elysium.elysium_auth.ElysiumAuthPaper
 api-version: '1.17'
 authors: [ Elysium Studio ]
