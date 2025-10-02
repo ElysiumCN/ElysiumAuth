@@ -1,0 +1,5 @@
+prefix: "&7| &3Elysium&eAuth &7| &r"
+
+loadAsPluginLanguage: "zh-CN.yml 已作为插件语言加载！"
+
+server_loading: "&c服务器还在初始化！"
