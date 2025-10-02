@@ -26,5 +26,5 @@ Elysium Auth 是一款支持多服务端（Paper/Velocity）的灵活认证插�
 ### ElysiumAuthAPI 开发&帮助手册
 - [开发中]()
 
-Elysium Studio
+Elysium Studio\
 Skilfully CN
