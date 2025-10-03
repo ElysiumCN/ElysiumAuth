@@ -98,14 +98,14 @@ authentication:
                 # | Database name
                 database: "elysiumAuth"
 
-            # MongoDB 数据库配置
+            # PostgreSQL 数据库配置
             #
-            # | MongoDB Database Configuration
+            # | PostgreSQL Database Configuration
             PostgreSQL:
                 # 数据库地址和端口
                 #
                 # | Database address and port
-                address: "localhost:27017"
+                address: "localhost:5433"
 
                 # 数据库用户名
                 #

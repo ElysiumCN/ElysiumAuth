@@ -1,6 +1,6 @@
 package com.skilfully.elysium.elysium_auth.database.dao;
 
-import com.skilfully.elysium.elysium_auth.database.model.AccountData;
+import com.skilfully.elysium.elysium_auth.database.entity.AccountData;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -8,7 +8,6 @@ import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.jdbi.v3.sqlobject.transaction.Transaction;
 
 import java.time.LocalDateTime;
 import java.util.List;

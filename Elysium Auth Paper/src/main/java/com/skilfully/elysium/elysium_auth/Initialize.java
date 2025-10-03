@@ -3,12 +3,15 @@ package com.skilfully.elysium.elysium_auth;
 import com.skilfully.elysium.elysium_auth.config.ConfigManager;
 import com.skilfully.elysium.elysium_auth.data.GlobalData;
 import com.skilfully.elysium.elysium_auth.database.DatabaseManager;
-import com.skilfully.elysium.elysium_auth.database.dao.AccountDataDAO;
-import com.skilfully.elysium.elysium_auth.database.model.AccountData;
+import com.skilfully.elysium.elysium_auth.database.entity.AccountData;
+import com.skilfully.elysium.elysium_auth.utils.MessageSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.sqlite.core.DB;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Initialize {
@@ -27,25 +30,41 @@ public class Initialize {
 
     }
 
-    private static void loadDatabase() throws IOException {
-        String sqlType = ConfigManager.plugin_config.getString("authentication.local.database.type");
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
-        databaseManager.initWithCache(
-                sqlType,
-                ConfigManager.plugin_config.getString("authentication.local.database." + sqlType + ".address"),
-                ConfigManager.plugin_config.getString("authentication.local.database." + sqlType + ".username"),
-                ConfigManager.plugin_config.getString("authentication.local.database." + sqlType + ".password")
+    private static void loadDatabase() {
+        YamlConfiguration config = ConfigManager.plugin_config;
+        DatabaseManager dm = new DatabaseManager();
+        String DBType = config.getString("authentication.local.database.type");
+        if (DBType == null) throw new UnsupportedOperationException("不支持的数据库格式：null");
+        switch (DBType) {
+            case "MySQL" -> dm.initMySQL(
+                    config.getString("authentication.local.database.MySQL.address"),
+                    config.getString("authentication.local.database.MySQL.database"),
+                    config.getString("authentication.local.database.MySQL.username"),
+                    config.getString("authentication.local.database.MySQL.password"),
+                    config.getBoolean("authentication.local.database.MySQL.ssl"));
+            case "PostgreSQL" -> dm.initPostgreSQL(
+                    config.getString("authentication.local.database.PostgreSQL.address"),
+                    config.getString("authentication.local.database.PostgreSQL.database"),
+                    config.getString("authentication.local.database.PostgreSQL.username"),
+                    config.getString("authentication.local.database.PostgreSQL.password"),
+                    config.getBoolean("authentication.local.database.PostgreSQL.ssl"));
+            case "SQLite" -> dm.initSQLite(
+                    config.getString("authentication.local.database.SQLite.address"));
+            default -> throw new UnsupportedOperationException("不支持的数据库格式：" + DBType);
+        }
+
+        dm.saveAccountData(new AccountData()
+                .setUuid("")
+                .setBan(false)
+                .setName("XiangYuanHuLian")
+                .setPassword("123")
+                .setOfflineLocationX(0.00)
+                .setOfflineLocationY(0.00)
+                .setOfflineLocationZ(0.00)
+                .setOfflineLocationPitch(0.00)
+                .setOfflineLocationYaw(0.00)
+                .setRegisterDate(LocalDateTime.now())
         );
-
-        AccountDataDAO userDao = databaseManager.getAccountDataDAO();
-        userDao.insert(AccountData.builder()
-                .name("123")
-                .uuid("123")
-                .password("123")
-                .build());
-
-        // 关闭连接
-        Runtime.getRuntime().addShutdownHook(new Thread(databaseManager::close));
 
     }
 
