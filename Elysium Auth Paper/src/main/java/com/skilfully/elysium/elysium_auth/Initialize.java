@@ -3,68 +3,122 @@ package com.skilfully.elysium.elysium_auth;
 import com.skilfully.elysium.elysium_auth.config.ConfigManager;
 import com.skilfully.elysium.elysium_auth.data.GlobalData;
 import com.skilfully.elysium.elysium_auth.database.DatabaseManager;
-import com.skilfully.elysium.elysium_auth.database.entity.AccountData;
 import com.skilfully.elysium.elysium_auth.utils.MessageSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.sqlite.core.DB;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Initialize {
 
-
-
-    public static void init() throws IOException {
+    public static void init() throws IOException, UnsupportedOperationException, SQLException {
         // 创建文件夹
         Path workPath = Path.of(GlobalData.languageFolder);
         Files.createDirectories(workPath);
         // 加载配置文件&语言文件
         ConfigManager.loadConfig();
-        // 加载数据库
-        if (Objects.equals(ConfigManager.plugin_config.getString("authentication.type"), "local")) loadDatabase();
+        // 禁用HikariCP日志并加载数据库
+        disableHikariLogs();
+        if (Objects.equals(ConfigManager.plugin_config.getString("authentication.type"), "local")) {
+            if (!loadDatabase()) {
+                throw new RuntimeException("数据库加载失败");
+            }
+        }
+
+        DatabaseManager.getInstance().executeDDL("""
+                CREATE TABLE IF NOT EXISTS account (
+                    uuid VARCHAR(255) NOT NULL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    registerDate DATE NOT NULL,
+                    mail VARCHAR(255),
+                    mobile VARCHAR(255),
+                    offlineLocationX DOUBLE NOT NULL,
+                    offlineLocationY DOUBLE NOT NULL,
+                    offlineLocationZ DOUBLE NOT NULL,
+                    offlineLocationPitch DOUBLE NOT NULL,
+                    offlineLocationYaw DOUBLE NOT NULL,
+                    ban BOOLEAN NOT NULL DEFAULT 0,
+                    banner VARCHAR(255),
+                    banReason VARCHAR(255),
+                    banTime DATE
+                );
+                """
+        );
+
+        int lows = DatabaseManager.getInstance().executeUpdate("INSERT INTO account(uuid, name, password, offlineLocationX, offlineLocationY, offlineLocationZ, offlineLocationPitch, offlineLocationYaw, registerDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "123",
+                "xbkz",
+                "qwe",
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                LocalDateTime.now()
+        );
+
+        MessageSender.sendToConsole(lows);
 
 
     }
 
-    private static void loadDatabase() {
+    public static void disableHikariLogs() {
+        setLoggerOff("com.zaxxer.hikari.pool.PoolBase");
+        setLoggerOff("com.zaxxer.hikari.pool.HikariPool");
+        setLoggerOff("com.zaxxer.hikari.HikariDataSource");
+        setLoggerOff("com.zaxxer.hikari.HikariConfig");
+        setLoggerOff("com.zaxxer.hikari.util.DriverDataSource");
+        setLoggerOff("com.zaxxer.hikari");
+    }
+
+    private static void setLoggerOff(String loggerName) {
+        Logger logger = JavaPlugin.getPlugin(ElysiumAuthPaper.class).getLogger();
+        logger.setLevel(Level.OFF);
+        logger.setUseParentHandlers(false);
+    }
+
+    private static boolean loadDatabase() throws UnsupportedOperationException {
         YamlConfiguration config = ConfigManager.plugin_config;
-        DatabaseManager dm = new DatabaseManager();
         String DBType = config.getString("authentication.local.database.type");
         if (DBType == null) throw new UnsupportedOperationException("不支持的数据库格式：null");
+        DatabaseManager dbManager = DatabaseManager.getInstance();
         switch (DBType) {
-            case "MySQL" -> dm.initMySQL(
-                    config.getString("authentication.local.database.MySQL.address"),
-                    config.getString("authentication.local.database.MySQL.database"),
-                    config.getString("authentication.local.database.MySQL.username"),
-                    config.getString("authentication.local.database.MySQL.password"),
-                    config.getBoolean("authentication.local.database.MySQL.ssl"));
-            case "PostgreSQL" -> dm.initPostgreSQL(
-                    config.getString("authentication.local.database.PostgreSQL.address"),
-                    config.getString("authentication.local.database.PostgreSQL.database"),
-                    config.getString("authentication.local.database.PostgreSQL.username"),
-                    config.getString("authentication.local.database.PostgreSQL.password"),
-                    config.getBoolean("authentication.local.database.PostgreSQL.ssl"));
-            case "SQLite" -> dm.initSQLite(
-                    config.getString("authentication.local.database.SQLite.address"));
-            default -> throw new UnsupportedOperationException("不支持的数据库格式：" + DBType);
+            case "MySQL" -> {
+                Map<String, String> configMap = new HashMap<>();
+                configMap.put("username", config.getString("authentication.local.database.MySQL.username"));
+                configMap.put("password", config.getString("authentication.local.database.MySQL.password"));
+                configMap.put("address", config.getString("authentication.local.database.MySQL.address"));
+                configMap.put("ssl", config.getString("authentication.local.database.MySQL.ssl"));
+                configMap.put("database", config.getString("authentication.local.database.MySQL.database"));
+                return dbManager.initialize(DatabaseManager.DatabaseType.MYSQL, configMap);
+            }
+            case "PostgreSQL" -> {
+                Map<String, String> configMap = new HashMap<>();
+                configMap.put("username", config.getString("authentication.local.database.PostgreSQL.username"));
+                configMap.put("password", config.getString("authentication.local.database.PostgreSQL.password"));
+                configMap.put("address", config.getString("authentication.local.database.PostgreSQL.address"));
+                configMap.put("ssl", config.getString("authentication.local.database.PostgreSQL.ssl"));
+                configMap.put("database", config.getString("authentication.local.database.PostgreSQL.database"));
+                return dbManager.initialize(DatabaseManager.DatabaseType.POSTGRESQL, configMap);
+            }
+            case "SQLite" -> {
+                Map<String, String> configMap = Map.of(
+                        "address", String.valueOf(config.getString("authentication.local.database.SQLite.address"))
+                );
+                return dbManager.initialize(DatabaseManager.DatabaseType.SQLITE, configMap);
+            }
+            default -> throw new UnsupportedOperationException("&c不支持的数据库格式：" + DBType);
         }
-
-        dm.saveAccountData(new AccountData()
-                .setUuid("")
-                .setBan(false)
-                .setName("XiangYuanHuLian")
-                .setPassword("123")
-                .setOfflineLocationX(0.00)
-                .setOfflineLocationY(0.00)
-                .setOfflineLocationZ(0.00)
-                .setOfflineLocationPitch(0.00)
-                .setOfflineLocationYaw(0.00)
-                .setRegisterDate(LocalDateTime.now())
-        );
 
     }
 

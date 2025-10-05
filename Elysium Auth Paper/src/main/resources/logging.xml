@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE loggingConfiguration SYSTEM "http://java.sun.com/dtd/logging-config.dtd">
+
+<loggingConfiguration>
+    <!-- 配置根日志级别 -->
+    <logger name="" level="INFO">
+        <handlers>
+            <handler name="ConsoleHandler"/>
+        </handlers>
+    </logger>
+
+    <!-- 禁用HikariCP所有相关日志 -->
+    <logger name="com.zaxxer.hikari" level="OFF" useParentHandlers="false"/>
+    <logger name="com.zaxxer.hikari.HikariDataSource" level="OFF" useParentHandlers="false"/>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="OFF" useParentHandlers="false"/>
+    <logger name="com.zaxxer.hikari.util.DriverDataSource" level="OFF" useParentHandlers="false"/>
+
+    <!-- 控制台处理器配置 -->
+    <handler name="ConsoleHandler" class="java.util.logging.ConsoleHandler">
+        <level name="INFO"/>
+        <formatter class="java.util.logging.SimpleFormatter"/>
+    </handler>
+</loggingConfiguration>
