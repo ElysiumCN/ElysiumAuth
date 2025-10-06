@@ -1,5 +1,6 @@
 package com.skilfully.elysium.elysium_auth;
 
+import com.skilfully.elysium.elysium_auth.database.DatabaseManager;
 import com.skilfully.elysium.elysium_auth.utils.MessageSender;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,7 @@ public final class ElysiumAuthPaper extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        DatabaseManager.getInstance().close();
     }
 
 }
