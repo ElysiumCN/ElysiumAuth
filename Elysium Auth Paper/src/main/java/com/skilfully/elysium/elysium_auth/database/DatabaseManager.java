@@ -43,6 +43,7 @@ public class DatabaseManager {
             // 从配置中获取SSL设置，默认为false
             boolean useSSL = Boolean.parseBoolean(config.getOrDefault("useSSL", "false"));
 
+
             // 根据数据库类型配置连接池
             switch (type) {
                 case MYSQL:
@@ -68,7 +69,7 @@ public class DatabaseManager {
 
                 case SQLITE:
                     // SQLite 通常不需要SSL配置
-                    String sqlitePath = config.getOrDefault("path", "data.db");
+                    String sqlitePath = config.getOrDefault("address", "data.db");
                     hikariConfig.setJdbcUrl("jdbc:sqlite:" + GlobalData.dataFolder + sqlitePath);
                     hikariConfig.setMaximumPoolSize(1);
                     hikariConfig.setConnectionTestQuery("SELECT 1");

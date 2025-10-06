@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -27,7 +28,6 @@ public class Initialize {
         // 加载配置文件&语言文件
         ConfigManager.loadConfig();
         // 禁用HikariCP日志并加载数据库
-        disableHikariLogs();
         if (Objects.equals(ConfigManager.plugin_config.getString("authentication.type"), "local")) {
             if (!loadDatabase()) {
                 throw new RuntimeException("数据库加载失败");
@@ -70,21 +70,6 @@ public class Initialize {
         MessageSender.sendToConsole(lows);
 
 
-    }
-
-    public static void disableHikariLogs() {
-        setLoggerOff("com.zaxxer.hikari.pool.PoolBase");
-        setLoggerOff("com.zaxxer.hikari.pool.HikariPool");
-        setLoggerOff("com.zaxxer.hikari.HikariDataSource");
-        setLoggerOff("com.zaxxer.hikari.HikariConfig");
-        setLoggerOff("com.zaxxer.hikari.util.DriverDataSource");
-        setLoggerOff("com.zaxxer.hikari");
-    }
-
-    private static void setLoggerOff(String loggerName) {
-        Logger logger = JavaPlugin.getPlugin(ElysiumAuthPaper.class).getLogger();
-        logger.setLevel(Level.OFF);
-        logger.setUseParentHandlers(false);
     }
 
     private static boolean loadDatabase() throws UnsupportedOperationException {

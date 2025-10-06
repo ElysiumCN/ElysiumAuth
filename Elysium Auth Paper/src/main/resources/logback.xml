@@ -1,0 +1,11 @@
+<configuration>
+    <!-- 禁用 HikariCP 特定日志 -->
+    <logger name="com.zaxxer.hikari" level="OFF"/>
+
+    <!-- 或者设置为 ERROR 级别，只显示错误 -->
+    <logger name="com.zaxxer.hikari" level="ERROR"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
