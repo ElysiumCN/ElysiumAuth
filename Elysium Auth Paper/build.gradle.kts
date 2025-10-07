@@ -1,6 +1,7 @@
 plugins {
     java
     id("io.freefair.lombok") version "8.4"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.skilfully.elysium"
@@ -58,5 +59,15 @@ tasks.processResources {
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {
         expand(props)
+    }
+}
+
+tasks{
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+
+        minecraftVersion("1.17.1")
     }
 }
