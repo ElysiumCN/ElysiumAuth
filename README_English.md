@@ -9,7 +9,7 @@ Elysium Auth is a flexible authentication plugin supporting multiple server type
 - Multi-server support: Compatible with both Paper servers and Velocity proxies without requiring separate adaptation code.
 - Flexible authentication modes: Four authentication methods available:
   - proxy: Relies on upstream Velocity proxy authentication, ideal for multi-server interconnected environments.
-  - local: Local database authentication (supports SQLite/MySQL/MongoDB), suitable for single servers or small clusters.
+  - local: Local database authentication (supports SQLite/MySQL), suitable for single servers or small clusters.
   - official: Integrates with official authentication interfaces (following ElysiumAuthAPI protocol), perfect for unified account system scenarios.
   - custom: Supports custom authentication (JAR extensions or JS scripts) for special authentication logic requirements.
 - Multi-language support: Automatically loads language files based on player region, with default Chinese (zh-CN.yml) and English (en-US.yml) included.

@@ -1,4 +1,7 @@
 package com.skilfully.elysium.elysium_auth.auth;
 
-public class AuthProvider {
+public interface AuthProvider {
+
+    
+
 }
