@@ -1,0 +1,8 @@
+name: AetherFantasyAuthPaper
+version: 0.1
+main: com.skilfully.aetherfantasy.aetherfantasy_auth.AetherFantasyAuthPaper
+api-version: '1.17'
+authors:
+    - "AetherFantasy Studio"
+description: AetherFantasy Auth for Paper
+website: aetherfantasy.skilfully.cn/products/bukkit-plugin/AetherFantasy_auth

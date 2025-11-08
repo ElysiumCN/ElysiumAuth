@@ -64,9 +64,9 @@ authentication:
         #
         # | Database Configuration
         database:
-            # 数据库类型，支持：[SQLite/MySQL/MongoDB]
+            # 数据库类型，支持：[SQLite/MySQL/PostgreSQL]
             #
-            # | Database type, supports: [SQLite/MySQL/MongoDB]
+            # | Database type, supports: [SQLite/MySQL/PostgreSQL]
             type: "SQLite"
 
             # MySQL 数据库配置
@@ -98,14 +98,14 @@ authentication:
                 # | Database name
                 database: "AetherFantasyAuth"
 
-            # MongoDB 数据库配置
+            # PostgreSQL 数据库配置
             #
-            # | MongoDB Database Configuration
-            MongoDB:
+            # | PostgreSQL Database Configuration
+            PostgreSQL:
                 # 数据库地址和端口
                 #
                 # | Database address and port
-                address: "localhost:27017"
+                address: "localhost:5433"
 
                 # 数据库用户名
                 #
@@ -141,6 +141,9 @@ authentication:
             regular:
                 name: "^[\u4e00-\u9fa5_a-zA-Z0-9]{2,32}$"
                 password: "^.{6,32}$"
+
+        register:
+
 
 
     # 官方认证配置

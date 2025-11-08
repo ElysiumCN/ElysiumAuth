@@ -1,9 +1,10 @@
 /.idea/
 /.xcodemap/
-/Elysium Auth Paper/.gradle/
-/Elysium Auth Paper/gradlew
-/Elysium Auth Paper/gradlew.bat
-/Elysium Auth Paper/build/
-/Elysium Auth Paper/run/
-/Elysium Auth Velocity/.gradle/
-/Elysium Auth Velocity/build/
+/AetherFantasy Auth Paper/.gradle/
+/AetherFantasy Auth Paper/gradlew
+/AetherFantasy Auth Paper/gradlew.bat
+/AetherFantasy Auth Paper/build/
+/AetherFantasy Auth Paper/run/
+/AetherFantasy Auth Velocity/.gradle/
+/AetherFantasy Auth Velocity/build/
+/*.iml
